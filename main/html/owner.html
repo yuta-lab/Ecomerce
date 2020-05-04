@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>owner page</title>
+    <link rel="stylesheet" href="../css/owner.css">
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+</head>
+<body>
+    <script src="../js/webshop.js"></script>
+    <script src="../../index.js"></script>
+    <h1>Upload and Delete (Owner only)</h1>
+
+    <div class="space">
+        <p></p>
+    </div>
+
+    <div id="upload-area">
+        <p>Upload</p>
+        <form action="/upload" method="POST" enctype="multipart/form-data"></form>
+            <div class="file-field input-field">
+              <div class="btn grey">
+                <label>File</label>
+                <input name="Images" type="file">
+              </div>
+            </div>
+
+            <label for="id">id</label>
+            <input type="text" id="id" name="id" />
+            
+            <label for="type">type</label>
+            <input type="text" id="type" name="type" />
+
+            <br>
+            <button type="submit" class="btn">Submit</button>
+
+        </form>
+
+    </div>
+
+    </div>
+
+    <div id="delete-area">
+        <p>Delete</p>
+        <form id="delete-form" method="GET">
+            <label for="id">id</label>
+            <input type="text" id="id" name="id" /><button type="submit" id="submitButton">Submit</button>
+        </form>
+
+        <div class="log">
+            <p></p>
+        </div>
+    </div>
+
+</body>
+</html>

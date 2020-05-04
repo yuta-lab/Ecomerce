@@ -1,0 +1,7 @@
+{"errno":-2,"code":"ENOENT","syscall":"stat","path":"/home/yuta-lab/web_project/public/html/login.html","expose":false,"statusCode":404,"status":404,"level":"error","timestamp":"2020-05-01 12:51:55"}
+{"errno":-2,"code":"ENOENT","syscall":"stat","path":"/home/yuta-lab/web_project/public/html/webshop.html","expose":false,"statusCode":404,"status":404,"level":"error","timestamp":"2020-05-01 12:53:26"}
+{"errno":-2,"code":"ENOENT","syscall":"stat","path":"/home/yuta-lab/web_project/public/html/login.html","expose":false,"statusCode":404,"status":404,"level":"error","timestamp":"2020-05-01 13:08:05"}
+{"level":"error","timestamp":"2020-05-02 08:04:21"}
+{"level":"error","timestamp":"2020-05-02 08:37:28"}
+{"level":"error","timestamp":"2020-05-02 09:34:11"}
+{"level":"error","timestamp":"2020-05-02 09:45:12"}
