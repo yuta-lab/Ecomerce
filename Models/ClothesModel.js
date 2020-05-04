@@ -8,21 +8,22 @@ class ClothesModel {
         const sql = `
             CREATE TABLE IF NOT EXISTS Clothes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            text TEXT
+            price INTEGER,
+            image_url TEXT
         )`
         return this.DAO.run(sql)
     }
 
-    add (text, id) {
+    add (price, imageUrl) {
         return this.DAO.run(
-            'INSERT INTO Clothes (text, id) VALUES (?, ?)',
-            [text, id]
+            'INSERT INTO Clothes (price, image_url) VALUES (?, ?)',
+            [price, imageUrl]
         );
     }
     
     getAll () {
         return this.DAO.all(
-            'SELECT text, id FROM Clothes'
+            'SELECT price, id, image_url FROM Clothes'
         );
     }
 

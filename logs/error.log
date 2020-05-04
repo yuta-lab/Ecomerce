@@ -5,3 +5,5 @@
 {"level":"error","timestamp":"2020-05-02 08:37:28"}
 {"level":"error","timestamp":"2020-05-02 09:34:11"}
 {"level":"error","timestamp":"2020-05-02 09:45:12"}
+{"view":{"defaultEngine":"ejs","ext":".ejs","name":"webshop","root":"/home/yuta-lab/web_project/views"},"level":"error","timestamp":"2020-05-04 08:10:26"}
+{"level":"error","timestamp":"2020-05-04 08:23:14"}

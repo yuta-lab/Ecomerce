@@ -33,6 +33,7 @@ const sess = session({
 // it parse the cookie before any routes are handled or 
 // application middleware kicks in
 app.use(sess);
+app.set("view engine", "ejs");
 
 /*
         Initialize logger
@@ -64,19 +65,10 @@ const logger = winston.createLogger({
 //     storage: storage,
 // }).single('Images');
 
-const upload = multer({ dest: './main/webshop' }).single('Images');
-
-app.post('/upload', function(req, res) {
-  upload(req, res, function(err) {
-    if(err) {
-      res.send("Failed to write " + req.file.destination + " with " + err);
-    } else {
-      res.send("uploaded " + req.file.originalname + " as " + req.file.filename + " Size: " + req.file.size);
-    }
-  });
-});
 
 const dbFilePath = process.env.DB_FILE_PATH || path.join(__dirname, 'Database', 'clothes.db');
+const userDbFilePath = process.env.DB_FILE_PATH || path.join(__dirname, 'Database', 'users.db');
+
 let Clothes = undefined;
 let Auth   = undefined;
 
@@ -103,7 +95,7 @@ app.get('/', (req, res, next) => {
         req.session.name  = req.query.name;
     }
     req.session.views = req.session.views ? req.session.views+1 : 1;
-
+    
     console.log(`current views:`);
     console.log(req.session);
     next();
@@ -138,9 +130,23 @@ app.get("/home", (req, res) => {
 });
 
 // app.post("/logout", (req, res) => {
-//     req.session.isVerified = false;
-//     res.sendStatus(200);
-// })
+    //     req.session.isVerified = false;
+    //     res.sendStatus(200);
+    // })
+
+const upload = multer({ dest: './main/webshop' }).single('Images');
+    
+app.post('/upload', function(req, res) {
+  upload(req, res, function(err) {
+    if(err) {
+      res.send("Failed to write " + req.file.destination + " with " + err);
+    } else {
+      console.log(req.body);
+      Clothes.add(parseInt(req.body.price), req.file.filename);
+      res.send("uploaded " + req.file.originalname + " as " + req.file.filename + " Size: " + req.file.size);
+    }
+  });
+});
 
 // about page
 app.get("/about", errorHandler(async (req, res) => {
@@ -210,13 +216,17 @@ app.post("/login", errorHandler( async (req, res) => {
 
 // webshop_list
 app.get("/webshop", errorHandler(async (req, res) => {
-    res.sendFile(path.join(__dirname, "main", "html", "webshop.html"));
+    // res.sendFile(path.join(__dirname, "main", "html", "webshop.html"));
+    const message = "Hello World!";
+    const rows = await Clothes.getAll();
+    console.log(rows)
+    res.render("webshop",  {message: message, rows: rows});
 }));
 
-app.post("/webshop", errorHandler( async (req, res) => {
-    const rows = await Clothes.getAll();
-    res.send(JSON.stringify({clothes_items: rows}));
-}));
+// app.post("/webshop", errorHandler( async (req, res) => {
+//     const rows = await Clothes.getAll();
+//     res.send(JSON.stringify({clothes_items: rows}));
+// }));
 
 
 
@@ -298,11 +308,12 @@ app.listen(80, async () => {
 // create database
 async function initDB() {
     const dao = await createDAO(dbFilePath);
+    const userDao = await createDAO(userDbFilePath);
     Clothes = new ClothesModel(dao);
     await Clothes.createTable();
-    Users = new UserModel(dao);
+    Users = new UserModel(userDao);
     await Users.createTable();
-    Auth = new AuthController(dao);
+    Auth = new AuthController(userDao);
 }
 
 // This is our default error handler (the error handler must be last)

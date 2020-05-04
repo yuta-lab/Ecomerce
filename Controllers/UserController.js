@@ -2,7 +2,7 @@ const UserModel = require('../Models/UserModel');
 const createDAO = require('../Models/dao');
 const path      = require('path');
 
-const dbFilePath = process.env.DB_FILE_PATH || path.join(__dirname, 'Database', 'clothes.db');
+const dbFilePath = process.env.DB_FILE_PATH || path.join(__dirname, 'Database', 'user.db');
 
 exports.getUserID = async function (username) {
     const dao = await createDAO(dbFilePath);
