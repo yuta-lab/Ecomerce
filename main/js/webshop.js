@@ -6,17 +6,6 @@ let local_items = [];
 
 document.querySelector("body").onload = main;
 
-const button = document.getElementById('cloth-add-cart-btn');
-button.addEventListener('click', function(e) {
-  fetch("/cart", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {"Content-Type": "application/json"}
-  }).catch( err => {
-      console.log(err);
-  });
-});
-
 function main() {
     default_items = id('clothes-list').innerHTML;
     // get the items from the server as soon as the page loads
