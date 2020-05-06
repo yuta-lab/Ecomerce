@@ -1,12 +1,15 @@
+body{
+    background-image: url("skin_color.jpeg");
+    background-size: cover;
+    background-repeat: repeat;
+    height: 100vh;
+}
+
 h1{
     text-align: center;
     text-decoration: none;
     border-bottom: 1px solid orange;
     padding-bottom: 1em;
-}
-
-.space{
-    margin-bottom: 1em;
 }
 
 #upload-area{
@@ -27,7 +30,4 @@ h1{
     white-space: pre;
 }
 
-#delete-form{
-    display: inline-block;
-    text-align: left;
-}
+

@@ -12,42 +12,26 @@
     <script src="../../index.js"></script>
     <h1>Upload and Delete (Owner only)</h1>
 
-    <div class="space">
-        <p></p>
-    </div>
-
     <div id="upload-area">
         <p>Upload</p>
         <form action="/upload" method="POST" enctype="multipart/form-data">
             <div class="file-field input-field">
               <div class="btn grey">
-                <label>File</label>
                 <input name="Images" type="file">
               </div>
             </div>
             
-            <label for="price">type</label>
-            <input type="text" id="price" name="price">
-
-            <br>
-            <button type="submit" class="btn">Submit</button>
-
+            <div id="label-price"><label for="price">price</label></div>
+            <input type="text" id="price" name="price"><button type="submit" class="btn">Submit</button>
         </form>
-
-    </div>
-
     </div>
 
     <div id="delete-area">
         <p>Delete</p>
-        <form id="delete-form" method="GET">
+        <form action="/cloth/delete" id="delete-form" method="POST">
             <label for="id">id</label>
             <input type="text" id="id" name="id" /><button type="submit" id="submitButton">Submit</button>
-        </form>
-
-        <div class="log">
-            <p></p>
-        </div>
+        </form>        
     </div>
 
 </body>

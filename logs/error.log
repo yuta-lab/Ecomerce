@@ -7,3 +7,14 @@
 {"level":"error","timestamp":"2020-05-02 09:45:12"}
 {"view":{"defaultEngine":"ejs","ext":".ejs","name":"webshop","root":"/home/yuta-lab/web_project/views"},"level":"error","timestamp":"2020-05-04 08:10:26"}
 {"level":"error","timestamp":"2020-05-04 08:23:14"}
+{"level":"error","timestamp":"2020-05-05 16:11:02"}
+{"level":"error","timestamp":"2020-05-05 16:13:46"}
+{"level":"error","timestamp":"2020-05-05 16:20:01"}
+{"errno":1,"code":"SQLITE_ERROR","level":"error","timestamp":"2020-05-06 05:36:12"}
+{"level":"error","timestamp":"2020-05-06 06:04:14"}
+{"errno":19,"code":"SQLITE_CONSTRAINT","level":"error","timestamp":"2020-05-06 06:34:20"}
+{"errno":19,"code":"SQLITE_CONSTRAINT","level":"error","timestamp":"2020-05-06 06:36:59"}
+{"path":"/home/yuta-lab/web_project/views/cart.ejs","level":"error","timestamp":"2020-05-06 06:51:00"}
+{"level":"error","timestamp":"2020-05-06 07:06:07"}
+{"path":"/home/yuta-lab/web_project/views/cart.ejs","level":"error","timestamp":"2020-05-06 07:08:12"}
+{"level":"error","timestamp":"2020-05-06 08:07:15"}

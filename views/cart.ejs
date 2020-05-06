@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>webshope</title>
+      <link rel="stylesheet" type="text/css" href="css/cart.css">
+      <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- <script src="../js/cart.js"></script> -->
+
+    <input type="checkbox" id="check">
+    <label for="check">
+        <i class="fas fa-bars" id="btn"></i>
+        <i class="fas fa-times" id="cancel"></i>
+    </label>
+    
+    <div class="sidebar">
+        <header>Fabric of Nature</header>
+        <ul>
+            <li><a href="http://13.82.229.154/main"><i class="fas fa-home"></i>HOME</a></li>
+            <li><a href="http://13.82.229.154/login"><i class="fas fa-user"></i>LOG IN</a></li>
+            <!-- target="blank" enable to move another page of url-->
+            <li><a href="http://13.82.229.154/about" target="_blank"><i class="fas fa-link"></i>ABOUT</a></li>
+            <li><a href="http://13.82.229.154/shop" target="_blank"><i class="fas fa-store"></i>SHOP</a></li>
+            <li><a href="http://13.82.229.154/webshop"><i class="fas fa-shopping-bag"></i>WEB SHOP</a></li>
+            <li><a href="http://13.82.229.154/cart"><i class="fas fa-shopping-cart"></i>CART</a></li>
+            <li><a href="http://13.82.229.154/logout"><i class="fas fa-door-open"></i>"></i>LOG OUT</a></li>
+        </ul>
+    </div>
+
+    <h1>Current Cart</h1>
+
+    <% if (cartItems.lengh !== 0) { %>
+    <div id="anything">
+        <div class="image-container">
+            <% cartItems.forEach(function (item, key) { %>
+                <div class="cart-item-wrapper">
+                    <img style="display: block;" class="detail_img" src="<%= `http://13.82.229.154/webshop/${item.image_url}` %>" />
+                    <span class='clothes-item-text'><%= item.price %></span>
+                </div>
+            <% }); %>
+        </div>
+        
+        <p>Subtotal <%= subtotal %></p>
+    </div>
+
+    <% } else { %>
+    <div id="nothing">
+        <p>No current items in your cart</p>
+        <p>Continue shopping   <a href="http://13.82.229.154/webshop">here</a></p>
+    </div>
+    <% } %>
+
+
+    </body>
+</html>

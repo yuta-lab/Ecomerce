@@ -3,34 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>webshope</title>
+    <title>webshop</title>
     <link rel="stylesheet" type="text/css" href="../css/webshop.css">
     <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 </head>
 <body>
     <script src="../js/webshop.js"></script>
 
+    <input type="checkbox" id="check">
+    <label for="check">
+        <i class="fas fa-bars" id="btn"></i>
+        <i class="fas fa-times" id="cancel"></i>
+    </label>
+    <div class="sidebar">
+        <header>Fabric of Nature</header>
+        <ul>
+            <li><a href="http://13.82.229.154/main"><i class="fas fa-home"></i>HOME</a></li>
+            <li><a href="http://13.82.229.154/login"><i class="fas fa-user"></i>LOG IN</a></li>
+            <!-- target="blank" enable to move another page of url-->
+            <li><a href="http://13.82.229.154/about" target="_blank"><i class="fas fa-link"></i>ABOUT</a></li>
+            <li><a href="http://13.82.229.154/shop" target="_blank"><i class="fas fa-store"></i>SHOP</a></li>
+            <li><a href="http://13.82.229.154/webshop"><i class="fas fa-shopping-bag"></i>WEB SHOP</a></li>
+            <li><a href="http://13.82.229.154/cart"><i class="fas fa-shopping-cart"></i>CART</a></li>
+            <li><a href="http://13.82.229.154/logout"><i class="fas fa-door-open"></i>"></i>LOG OUT</a></li>
+        </ul>
+    </div>
+
     <h1>Fabric of nature</h1>
 
-    <div class="space">
-        <p></p>
+    <br>
+    <br>
+
+    <form method="POST" action="/cart">
+    <div class="image-container">
+        <% rows.forEach(function (cloth, key) { %>
+            <div class="cloth-wrapper">
+                <img style="display: block;" class="detail_img" src="<%= `http://13.82.229.154/webshop/${cloth.image_url}` %>" />
+                <span class='clothes-item-text'><%= cloth.price %></span>
+                <label>Add: </label>
+                <input type="checkbox" name="clothIds[<%= key %>]" value="<%= cloth.id %>">
+            </div>
+        <% }); %>
     </div>
-    
-    <section id='clothes-list-area'>
-        <ul id='clothes-list'>
-	</ul>
-    </section>
-
-
-    <% rows.forEach(function (cloth, key) { %>
-        <% if (key % 3 === 0) { %>
-            <br />
-        <% } %> 
-        <div class="cloth-wrapper">
-            <img style="display: block;" class="detail_img" src="<%= `http://13.82.229.154/webshop/${cloth.image_url}` %>" />
-            <span class='clothes-item-text'><%= cloth.price %></span>
-        </div>
-    <% }); %>
+    <button type="submit">Add items to Cart</button>
+    </form>
 
 </body>
 </html>

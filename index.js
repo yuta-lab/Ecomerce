@@ -4,13 +4,14 @@ const path           = require('path');
 const createDAO      = require('./Models/dao');
 const UserModel      = require('./Models/UserModel');
 const ClothesModel   = require('./Models/ClothesModel');
+const CartModel      = require('./Models/CartModel');
 const AuthController = require('./Controllers/AuthController');
 const winston        = require('winston');
 const redis          = require('redis');
 const session        = require('express-session');
 const RedisStore     = require('connect-redis')(session);
 const UserController = require('./Controllers/UserController');
-var multer           = require('multer');
+var   multer         = require('multer');
 
 const redisClient = redis.createClient();
 
@@ -25,6 +26,7 @@ const sess = session({
     resave: false, 
     cookie: {
         httpOnly: true,
+        // maxAge: 24 * 60 * 60 * 1000  // 24 hours
     },
     saveUninitialized: false, // set this to false so we can control when the cookie is set (i.e. when the user succesfully logs in)
 });
@@ -52,24 +54,14 @@ const logger = winston.createLogger({
     ]
 });
 
-// Storage for pic
-// const storage = multer.diskStorage({
-//     destination: './main/webshop/',
-//     filename: function(req, file, callback){
-//       callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-//     }
-// });
-  
-// // Init Upload
-// const upload = multer({
-//     storage: storage,
-// }).single('Images');
-
-
 const dbFilePath = process.env.DB_FILE_PATH || path.join(__dirname, 'Database', 'clothes.db');
 const userDbFilePath = process.env.DB_FILE_PATH || path.join(__dirname, 'Database', 'users.db');
+const cartDbFilePath = process.env.DB_FILE_PATH || path.join(__dirname, 'Database', 'cart.db');
+const webshopDbFilePath = process.env.DB_FILE_PATH || path.join(__dirname, 'Database', 'webshop.db');
+
 
 let Clothes = undefined;
+let Cart    = undefined;
 let Auth   = undefined;
 
 // Gives direct access to GET files from the
@@ -120,46 +112,32 @@ app.all('/account/:userID/*', (req, res, next) => {
     }
 });
 
-// Default route : home page
+
+// Default route : main page
 app.get("/", (req, res) => {
     console.log(req.ip);
-    res.redirect("/home");
+    res.redirect("/main");
 });
-app.get("/home", (req, res) => {
+app.get("/main", (req, res) => {
     res.sendFile(path.join(__dirname, "/main/html/main.html"));
 });
 
-// app.post("/logout", (req, res) => {
-    //     req.session.isVerified = false;
-    //     res.sendStatus(200);
-    // })
-
-const upload = multer({ dest: './main/webshop' }).single('Images');
-    
-app.post('/upload', function(req, res) {
-  upload(req, res, function(err) {
-    if(err) {
-      res.send("Failed to write " + req.file.destination + " with " + err);
-    } else {
-      console.log(req.body);
-      Clothes.add(parseInt(req.body.price), req.file.filename);
-      res.send("uploaded " + req.file.originalname + " as " + req.file.filename + " Size: " + req.file.size);
-    }
-  });
-});
-
-// about page
+/*
+    about page
+*/
 app.get("/about", errorHandler(async (req, res) => {
     res.sendFile(path.join(__dirname, "main", "html", "about.html"));
 }));
 
-// shop page
+/*
+    shop page
+*/
 app.get("/shop", errorHandler(async (req, res) => {
     res.sendFile(path.join(__dirname, "main", "html", "shop.html"));
 }));
 
 /*
-        Account Registration
+    Account Registration
 */
 app.get("/sinup", errorHandler(async (req, res) => {
     res.sendFile(path.join(__dirname, "main", "html", "sinup.html"));
@@ -214,7 +192,20 @@ app.post("/login", errorHandler( async (req, res) => {
     res.sendStatus(status);
 }));
 
-// webshop_list
+app.post("/logout", (req, res) => {
+    if (!req.session.isVerified) {
+        alert("Sin in first!");
+    } else {
+        req.session.destroy(function(err) {
+            if (err) return console.log(err);
+            res.redirect("main");
+        })
+    }    
+})
+
+/* 
+    webshop page
+*/
 app.get("/webshop", errorHandler(async (req, res) => {
     // res.sendFile(path.join(__dirname, "main", "html", "webshop.html"));
     const message = "Hello World!";
@@ -223,27 +214,26 @@ app.get("/webshop", errorHandler(async (req, res) => {
     res.render("webshop",  {message: message, rows: rows});
 }));
 
-// app.post("/webshop", errorHandler( async (req, res) => {
-//     const rows = await Clothes.getAll();
-//     res.send(JSON.stringify({clothes_items: rows}));
-// }));
 
-
-
-// owner page to add the item picture
+/*
+    owner (upload) page
+*/
 app.get("/owner", errorHandler(async (req, res) => {
     res.sendFile(path.join(__dirname, "main", "html", "owner.html"));
 }));
 
-// app.get("/owner", errorHandler(async (req, res) => {
-//     // if (!req.session.isVerified) {
-//     //     return res.sendStatus(403);
-//     // }
-//     const data = req.body;
-//     console.log(data);
-//     await clothes.add(data.text, data.id);
-//     res.sendStatus(200);
-// }));
+const upload = multer({ dest: './main/webshop' }).single('Images');
+    
+app.post('/upload', function(req, res) {
+  upload(req, res, function(err) {
+    if(err) {
+      res.send("Failed to write " + req.file.destination + " with " + err);
+    } else {
+      Clothes.add(parseInt(req.body.price), req.file.filename);
+      res.send("uploaded " + req.file.originalname + " as " + req.file.filename + " Size: " + req.file.size);
+    }
+  });
+});
 
 app.post('/owner', (req, res) => {
     upload(req, res, (err) => {
@@ -266,34 +256,55 @@ app.post('/owner', (req, res) => {
     });
 });
 
-app.delete("/owner/Clothes/:id", errorHandler( async (req, res) => {
-    Clothes.delete(req.query.id)
+/*
+    owner (delete) page
+*/
+app.post("/cloth/delete", errorHandler( async (req, res) => {
+    Clothes.delete(req.body.id);
+    res.send("success to delete")
 }));
 
-// cart page
+/*
+    cart page
+*/
 app.get("/cart", errorHandler(async (req, res) => {
-    if (req.session.isVerified) {
-
-    } else {
-    res.sendFile(path.join(__dirname, "main", "html", "cart.html"));
-    }
+    const user = await Users.getUserID(req.session.username);
+    const cartItems = await Cart.getAllClothsByUserUuid(user.uuid);
+    console.log(cartItems);
+    let subtotal = 0;
+    cartItems.forEach(item => subtotal += item.price)
+    res.render("cart",  {cartItems: cartItems, subtotal: subtotal});
+}));
+  
+app.post("/cart", errorHandler(async (req, res) => {
+    const user = await Users.getUserID(req.session.username);
+    req.body.clothIds.forEach(async (clothId) => {
+        await Cart.add(user.uuid, parseInt(clothId));
+    });
+    res.redirect("/cart");
 }));
 
-// ? cart 
-app.post("/cart", errorHandler( async (req, res) => {
-    const anything = document.getElementById("anything").value;
-    const nothing = document.getElementById("nothing").value;
+// app.get("/cart", errorHandler(async (req, res) => {
+//     if (req.session.isVerified) {
 
-    if (req.body === undefined) {
-        //what shoud be gotten
-        res.write(nothing);
-    }
-    else{
-        res.write(anything);
-    }
-}));
+//     } else {
+//     res.sendFile(path.join(__dirname, "main", "html", "cart.html"));
+//     }
+// }));
 
+ 
+// app.post("/cart", errorHandler( async (req, res) => {
+//     const anything = document.getElementById("anything").value;
+//     const nothing = document.getElementById("nothing").value;
 
+//     if (req.body === undefined) {
+//         //what shoud be gotten
+//         res.write(nothing);
+//     }
+//     else{
+//         res.write(anything);
+//     }
+// }));
 
 
 // Listen on port 80 (Default HTTP port)
@@ -305,15 +316,23 @@ app.listen(80, async () => {
     console.log("Listening on port 80.");
 });
 
-// create database
+/*
+    create database
+*/
 async function initDB() {
-    const dao = await createDAO(dbFilePath);
-    const userDao = await createDAO(userDbFilePath);
+    // const dao = await createDAO(dbFilePath);
+    // const userDao = await createDAO(userDbFilePath);
+    // const cartDao = await createDAO(cartDbFilePath);
+    const dao = await createDAO(webshopDbFilePath);
+
+
     Clothes = new ClothesModel(dao);
     await Clothes.createTable();
-    Users = new UserModel(userDao);
+    Cart = new CartModel(dao);
+    await Cart.createTable()
+    Users = new UserModel(dao);
     await Users.createTable();
-    Auth = new AuthController(userDao);
+    Auth = new AuthController(dao);
 }
 
 // This is our default error handler (the error handler must be last)

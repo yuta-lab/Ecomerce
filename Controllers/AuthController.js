@@ -6,9 +6,9 @@ class AuthController {
     this.UserModel = new UserModel(dao);
   }
 
-  async register(email, password) {
+  async register(username, password) {
     const passwordHash = await this.hashPassword(password);
-    this.UserModel.addUser(email, passwordHash);
+    this.UserModel.addUser(username, passwordHash);
   }
 
   async hashPassword(password) {
@@ -22,14 +22,14 @@ class AuthController {
     return hash;
   }
 
-  // Call this function to authenticate a user using a email and password
+  // Call this function to authenticate a user using a username and password
   // this function is asynchronous so it returns a promise
   // you need to implement the getPasswordHash() function in the UserModel class
   // these await statements can throw exceptions which we are using to indicate
   // failure. It would be better to define custom exceptions to throw but we'll
   // skip that for now
-  async login(email, password) {
-    const passwordHash = await this.UserModel.getPasswordHash(email);
+  async login(username, password) {
+    const passwordHash = await this.UserModel.getPasswordHash(username);
     const isVerified = await this.verifyPassword(passwordHash["passwordHash"], password);
     console.log(passwordHash, isVerified);
     return isVerified;
