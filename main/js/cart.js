@@ -6,8 +6,6 @@ function main() {
 }
 
 function display_cart (event) {
-    
-    
     fetch("http://13.82.229.154/cart", {
         method: "GET",
         body: JSON.stringify(data),

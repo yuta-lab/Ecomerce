@@ -1,36 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>webshope</title>
     <link rel="stylesheet" type="text/css" href="../css/webshop.css">
     <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
-</head>
-<body>
-    <script src="../js/webshop.js"></script>
+  </head>
+  <body>
+    <script src="/js/webshop.js"></script>
 
     <h1>Fabric of nature</h1>
 
     <div class="space">
         <p></p>
     </div>
-    
+
     <section id='clothes-list-area'>
-        <ul id='clothes-list'>
-	</ul>
+      <ul id='clothes-list'>
+	    </ul>
     </section>
 
-
-    <% rows.forEach(function (cloth, key) { %>
+    <form method="POST" action="/cart">
+      <% rows.forEach(function (cloth, key) { %>
         <% if (key % 3 === 0) { %>
-            <br />
-        <% } %> 
+          <br />
+        <% } %>
         <div class="cloth-wrapper">
-            <img style="display: block;" class="detail_img" src="<%= `http://13.82.229.154/webshop/${cloth.image_url}` %>" />
-            <span class='clothes-item-text'><%= cloth.price %></span>
+          <img style="display: block;" class="detail_img" src="<%= `http://13.82.229.154/webshop/${cloth.image_url}` %>" />
+          <span class='clothes-item-text'><%= cloth.price %></span>
+          <label>Add: </label>
+          <input type="checkbox" name="clothIds[<%= key %>]" value="<%= cloth.id =>">
         </div>
-    <% }); %>
-
-</body>
+      <% }); %>
+      <button type="submit">Add items to Cart</button>
+    </form>
+  </body>
 </html>

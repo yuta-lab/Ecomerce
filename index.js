@@ -4,6 +4,7 @@ const path           = require('path');
 const createDAO      = require('./Models/dao');
 const UserModel      = require('./Models/UserModel');
 const ClothesModel   = require('./Models/ClothesModel');
+const CartModel      = require('./Models/CartModel');
 const AuthController = require('./Controllers/AuthController');
 const winston        = require('winston');
 const redis          = require('redis');
@@ -70,7 +71,8 @@ const dbFilePath = process.env.DB_FILE_PATH || path.join(__dirname, 'Database', 
 const userDbFilePath = process.env.DB_FILE_PATH || path.join(__dirname, 'Database', 'users.db');
 
 let Clothes = undefined;
-let Auth   = undefined;
+let Cart    = undefined;
+let Auth    = undefined;
 
 // Gives direct access to GET files from the
 // "main" directory (you can name the directory anything)
@@ -223,6 +225,16 @@ app.get("/webshop", errorHandler(async (req, res) => {
     res.render("webshop",  {message: message, rows: rows});
 }));
 
+app.get("/cart", errorHandler(async (req, res) => {
+  const cartItems = await Cart.getAllClothsByUserId(req.session.userID);
+  res.render("cart",  {cartItems: cartItems});
+}));
+
+app.post("/cart", errorHandler(async (req, res) => {
+  Cart.add(req.session.userID, parseInt(req.body.clothId));
+  res.send("Success adding the item to your cart.");
+}));
+
 // app.post("/webshop", errorHandler( async (req, res) => {
 //     const rows = await Clothes.getAll();
 //     res.send(JSON.stringify({clothes_items: rows}));
@@ -307,13 +319,15 @@ app.listen(80, async () => {
 
 // create database
 async function initDB() {
-    const dao = await createDAO(dbFilePath);
-    const userDao = await createDAO(userDbFilePath);
-    Clothes = new ClothesModel(dao);
-    await Clothes.createTable();
-    Users = new UserModel(userDao);
-    await Users.createTable();
-    Auth = new AuthController(userDao);
+  const dao = await createDAO(dbFilePath);
+  const userDao = await createDAO(userDbFilePath);
+  Clothes = new ClothesModel(dao);
+  await Clothes.createTable();
+  Users = new UserModel(userDao);
+  await Users.createTable();
+  Auth = new AuthController(userDao);
+  Cart = new CartModel(dao);
+  await Cart.createTable()
 }
 
 // This is our default error handler (the error handler must be last)
